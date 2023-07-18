@@ -1,5 +1,5 @@
 {
-	"name": "goran/save_close_ce",
+	"name": "spooner-web/save_close_ce",
 	"type": "typo3-cms-extension",
 	"description": "Adds save and close button to all the content elements for TYPO3 9",
 	"license": "GPL-2.0+",
@@ -10,7 +10,7 @@
 	},
 	"require": {
 		"php": "^7. || ^8.0",
-		"typo3/cms-core": "^9.5 || ^10.2 || ^11.0"
+		"typo3/cms-core": "^9.5 || ^10.4 || ^11.5"
 	},
 	"extra": {
 		"typo3/cms": {
