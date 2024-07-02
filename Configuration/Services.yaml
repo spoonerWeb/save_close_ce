@@ -1,0 +1,13 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Goran\SaveCloseCe\:
+    resource: '../Classes/*'
+
+  Goran\SaveCloseCe\EventListeners\ButtonBarEventListener:
+    tags:
+      - name: event.listener
+        identifier: 'save_close_ce/backend/button-bar'
