@@ -2,62 +2,37 @@
 
 namespace Goran\SaveCloseCe\Hooks;
 
+use Goran\SaveCloseCe\Service\ButtonBarService;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Imaging\Icon;
-use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Backend\Template\Components\Buttons\InputButton;
 
 /**
  * Add an extra save and view button at the end
  *
  * Class SaveViewHook
  * @package Goran\SaveCloseCe\Hooks
+ *
+ * @todo This class is only for < v12, remove when support for v11 and below is dropped
  */
 class SaveViewHook
 {
-    /**
-     * @param array $params
-     * @param $buttonBar
-     * @return array
-     */
-    public function addSaveViewButton($params, &$buttonBar): array
+    protected ButtonBarService $buttonBarService;
+    public function __construct(?ButtonBarService $buttonBarService = null)
     {
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('save_close_ce');
-        $showButton = (bool)$extensionConfiguration['saveAndView']['button'];
-        $showLabel = (bool)$extensionConfiguration['saveAndView']['label'];
-        $buttons = $params['buttons'];
-
-        if ($showButton === false) {
-            return $buttons;
+        if (!$buttonBarService) {
+            $buttonBarService = GeneralUtility::makeInstance(ButtonBarService::class);
         }
-
-        $button = $buttons[ButtonBar::BUTTON_POSITION_LEFT][2][0] ?? null;
-        if ($button instanceof InputButton) {
-            /** @var IconFactory $iconFactory */
-            $iconFactory = GeneralUtility::makeInstance(IconFactory::class);
-
-            $saveAndViewButton = $buttonBar->makeInputButton()
-                ->setName('_savedokview')
-                ->setValue('1')
-                ->setForm($button->getForm())
-                ->setTitle($this->getLanguageService()->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:rm.saveDocShow'))
-                ->setIcon($iconFactory->getIcon('actions-document-save-view', Icon::SIZE_SMALL))
-                ->setShowLabelText($showLabel);
-
-            $buttons[ButtonBar::BUTTON_POSITION_LEFT][2][] = $saveAndViewButton;
-        }
-        return $buttons;
+        $this->buttonBarService = $buttonBarService;
     }
 
     /**
-     * Returns the language service
-     * @return LanguageService
+     * @param array $params
+     * @param ButtonBar $buttonBar
+     * @return array
      */
-    protected function getLanguageService()
+    public function addSaveViewButton($params, ButtonBar $buttonBar): array
     {
-        return $GLOBALS['LANG'];
+        $buttons = $params['buttons'] ?? [];
+        return $this->buttonBarService->addSaveViewButton($buttons, $buttonBar);
     }
 }
